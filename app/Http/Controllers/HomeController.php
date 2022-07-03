@@ -13,9 +13,9 @@ class HomeController extends Controller
 {
     public function index(ImportProductsJob $importProductsJob)
     {
-        //$importProductsJob->dispatch();
+        $importProductsJob->dispatch();
 
-        (new ImportProducts())->importProducts();
+        //(new ImportProducts())->importProducts();
 
         //$categories = Category::all();
         $categories = [];

@@ -17,7 +17,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->job((new ImportProductsJob))->twiceDaily(12, 0);
+        $schedule->job(new ImportProductsJob)->twiceDaily(1, 13);
+        //$schedule->job(new ImportProductsJob)->everyMinute();
     }
 
     /**

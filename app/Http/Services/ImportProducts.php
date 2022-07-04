@@ -8,7 +8,6 @@ use App\Models\Category;
 use App\Models\Color;
 use App\Models\Material;
 use App\Models\Product;
-use App\Models\ProductVariation;
 use Illuminate\Support\Facades\Http;
 
 class ImportProducts
@@ -79,6 +78,7 @@ class ImportProducts
 
             $product_counter = 0;
             $parent_id = 0;
+            //dd($products);
             foreach ($products as $product) {
 
                 $prod = Product::updateOrCreate(
@@ -91,13 +91,14 @@ class ImportProducts
                         'product_type' => $product['product_type'],
                         'product_name' => $product['product_name'],
                         'product_stock' => $product['product_stock'],
-                        'product_price' => (float) $product['product_price'] * 100,
+                        'product_price' => ((float) $product['product_price']) * 100,
                         'product_rating' => $product['product_ratings'],
                         'product_sales' => $product['product_sales'],
                         'product_parent_id' => ($product_counter % self::EVERY_N_PRODUCT_IS_MAIN === 0) ? null : $parent_id,
                         'category_id' => $this->getCategoryByName($product['product_category'])->id,
                         'material_id' => $this->getMaterialByName($product['product_material'])->id,
                         'color_id' => $this->getColorByName($product['product_color'])->id,
+                        'updated_at' => now()
                     ]
                 );
 
@@ -105,15 +106,6 @@ class ImportProducts
                     $parent_id = $prod->id;
                 }
 
-                /*
-                $prod->colors_products()->updateOrCreate([
-                    'color_id' => $this->getColorByName($product['product_color'])->id,
-                ]);
-
-                $prod->materials_products()->updateOrCreate([
-                    'material_id' => $this->getMaterialByName($product['product_material'])->id,
-                ]);
-                */
                 $product_counter++;
             }
         }

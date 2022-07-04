@@ -17,24 +17,25 @@ class ProductsController extends Controller
     public function index()
     {
         return
-            Product::select('id', 'product_name', 'color_id', 'material_id')
+            Product::select('id', 'product_image', 'product_id', 'product_type', 'product_name', 'product_stock', 'product_rating', 'product_sales', 'color_id', 'material_id')
+            ->selectRaw('ROUND((product_price / 100.0), 2) as product_price')
             ->with([
                 'variations' => function (HasMany $query) {
-                    $query->select('products.id', 'products.product_parent_id', 'color_id', 'material_id')
+                    $query->select('id', 'product_parent_id', 'color_id', 'material_id')
                         ->with([
                             'color' => function (BelongsTo $query) {
-                                $query->select('colors.id', 'colors.color_name');
+                                $query->select('id', 'color_name');
                             },
                             'material' => function (BelongsTo $query) {
-                                $query->select('materials.id', 'materials.material_name');
+                                $query->select('id', 'material_name');
                             }
                         ]);
                 },
                 'color' => function (BelongsTo $query) {
-                    $query->select('colors.id', 'colors.color_name');
+                    $query->select('id', 'color_name');
                 },
                 'material' => function (BelongsTo $query) {
-                    $query->select('materials.id', 'materials.material_name');
+                    $query->select('id', 'material_name');
                 }
             ])
             ->where('product_parent_id', null)
